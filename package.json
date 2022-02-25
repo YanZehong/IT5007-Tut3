@@ -1,0 +1,31 @@
+{
+  "name": "tut3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -w server server/server.js",
+    "compile": "babel src --out-dir public",
+    "watch": "babel src --out-dir public --watch --verbose",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YanZehong/IT5007-Tut3.git"
+  },
+  "author": "yzh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YanZehong/IT5007-Tut3/issues"
+  },
+  "homepage": "https://github.com/YanZehong/IT5007-Tut3#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "nodemon": "^1.19.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.5",
+    "@babel/preset-react": "^7.16.7"
+  }
+}
