@@ -1,19 +1,8 @@
 const initialIssues = [{
   id: 1,
-  status: 'New',
-  owner: 'Ravan',
-  effort: 5,
-  created: new Date('2018-08-15'),
-  due: undefined,
-  title: 'Error in console when clicking Add'
-}, {
-  id: 2,
-  status: 'Assigned',
-  owner: 'Eddie',
-  effort: 14,
-  created: new Date('2018-08-16'),
-  due: new Date('2018-08-30'),
-  title: 'Missing bottom border on panel'
+  name: 'Ravan',
+  phone: 80395199,
+  created: new Date('2018-08-15')
 }];
 
 class IssueFilter extends React.Component {
@@ -26,7 +15,7 @@ class IssueFilter extends React.Component {
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.status), /*#__PURE__*/React.createElement("td", null, issue.owner), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, issue.effort), /*#__PURE__*/React.createElement("td", null, issue.due ? issue.due.toDateString() : ''), /*#__PURE__*/React.createElement("td", null, issue.title));
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.phone), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", null, "Remove")));
   }
 
 }
@@ -39,7 +28,7 @@ class IssueTable extends React.Component {
     }));
     return /*#__PURE__*/React.createElement("table", {
       className: "bordered-table"
-    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Created"), /*#__PURE__*/React.createElement("th", null, "Effort"), /*#__PURE__*/React.createElement("th", null, "Due Date"), /*#__PURE__*/React.createElement("th", null, "Title"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Seat No."), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Phone Number"), /*#__PURE__*/React.createElement("th", null, "Timestamp"), /*#__PURE__*/React.createElement("th", null, "Operation"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
   }
 
 }
@@ -54,13 +43,14 @@ class IssueAdd extends React.Component {
     e.preventDefault();
     const form = document.forms.issueAdd;
     const issue = {
-      owner: form.owner.value,
-      title: form.title.value,
-      status: 'New'
+      name: form.name.value,
+      phone: form.phone.value,
+      id: form.seat.value
     };
     this.props.createIssue(issue);
-    form.owner.value = "";
-    form.title.value = "";
+    form.name.value = "";
+    form.phone.value = "";
+    form.seat.value = "";
   }
 
   render() {
@@ -69,12 +59,16 @@ class IssueAdd extends React.Component {
       onSubmit: this.handleSubmit
     }, /*#__PURE__*/React.createElement("input", {
       type: "text",
-      name: "owner",
-      placeholder: "Owner"
+      name: "name",
+      placeholder: "Name"
     }), /*#__PURE__*/React.createElement("input", {
       type: "text",
-      name: "title",
-      placeholder: "Title"
+      name: "phone",
+      placeholder: "Phone"
+    }), /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "seat",
+      placeholder: "Seat No."
     }), /*#__PURE__*/React.createElement("button", null, "Add"));
   }
 
@@ -102,7 +96,6 @@ class IssueList extends React.Component {
   }
 
   createIssue(issue) {
-    issue.id = this.state.issues.length + 1;
     issue.created = new Date();
     const newIssueList = this.state.issues.slice();
     newIssueList.push(issue);
