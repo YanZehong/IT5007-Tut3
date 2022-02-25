@@ -1,39 +1,14 @@
-const initialIssues = [{
-  id: 1,
-  name: 'Ravan',
-  phone: 80395199,
-  created: new Date('2018-08-15')
-}];
-
-class IssueFilter extends React.Component {
-  render() {
-    return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the issue filter.");
-  }
-
-}
+const initialIssues = [];
 
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.phone), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", null, "Remove")));
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.phone), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()));
   }
 
 }
 
-class IssueTable extends React.Component {
-  render() {
-    const issueRows = this.props.issues.map(issue => /*#__PURE__*/React.createElement(IssueRow, {
-      key: issue.id,
-      issue: issue
-    }));
-    return /*#__PURE__*/React.createElement("table", {
-      className: "bordered-table"
-    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Seat No."), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Phone Number"), /*#__PURE__*/React.createElement("th", null, "Timestamp"), /*#__PURE__*/React.createElement("th", null, "Operation"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
-  }
-
-}
-
-class IssueAdd extends React.Component {
+class AddTraveller extends React.Component {
   constructor() {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -74,13 +49,59 @@ class IssueAdd extends React.Component {
 
 }
 
-class IssueList extends React.Component {
+class DeleteTraveller extends React.Component {
+  constructor() {
+    super();
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete(e) {
+    e.preventDefault();
+    const form1 = document.forms.issueDelete;
+    const issueID = form1.seatDel.value;
+    this.props.deleteIssue(issueID);
+    form1.seatDel.value = "";
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("form", {
+      name: "issueDelete",
+      onSubmit: this.handleDelete
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "seatDel",
+      placeholder: "Seat No."
+    }), /*#__PURE__*/React.createElement("button", null, "Delete"));
+  }
+
+}
+
+class DisplayTraveller extends React.Component {
+  render() {
+    const issueRows = this.props.issues.map(issue => /*#__PURE__*/React.createElement(IssueRow, {
+      key: issue.id,
+      issue: issue
+    }));
+    return /*#__PURE__*/React.createElement("table", {
+      className: "bordered-table"
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Seat No."), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Phone Number"), /*#__PURE__*/React.createElement("th", null, "Timestamp"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
+  }
+
+}
+
+class DisplayHomepage extends React.Component {
   constructor() {
     super();
     this.state = {
+      routes: 1,
       issues: []
     };
     this.createIssue = this.createIssue.bind(this);
+    this.deleteIssue = this.deleteIssue.bind(this);
+    this.handleAddTra = this.handleAddTra.bind(this);
+    this.handleDelTra = this.handleDelTra.bind(this);
+    this.handleDispRes = this.handleDispRes.bind(this);
+    this.handleDispSeat = this.handleDispSeat.bind(this);
   }
 
   componentDidMount() {
@@ -104,15 +125,104 @@ class IssueList extends React.Component {
     });
   }
 
+  deleteIssue(issueID) {
+    const newIssueList = this.state.issues.slice();
+    const updateIssueList = [];
+
+    for (let i = 0; i < this.state.issues.length; i++) {
+      if (newIssueList[i].id == issueID) {
+        continue;
+      }
+
+      updateIssueList.push(newIssueList[i]);
+    }
+
+    this.setState({
+      issues: updateIssueList
+    });
+  }
+
+  handleAddTra(e) {
+    e.preventDefault();
+    this.setState({
+      routes: 1
+    });
+  }
+
+  handleDelTra(e) {
+    e.preventDefault();
+    this.setState({
+      routes: 2
+    });
+  }
+
+  handleDispRes(e) {
+    e.preventDefault();
+    this.setState({
+      routes: 3
+    });
+  }
+
+  handleDispSeat(e) {
+    e.preventDefault();
+    this.setState({
+      routes: 4
+    });
+  }
+
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Issue Tracker"), /*#__PURE__*/React.createElement(IssueFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
-      issues: this.state.issues
-    }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueAdd, {
-      createIssue: this.createIssue
-    }));
+    if (this.state.routes == 1) {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Singapore Railway System"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleAddTra
+      }, "Add Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDelTra
+      }, "Delete Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispRes
+      }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispSeat
+      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(AddTraveller, {
+        createIssue: this.createIssue
+      }));
+    } else if (this.state.routes == 2) {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Singapore Railway System"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleAddTra
+      }, "Add Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDelTra
+      }, "Delete Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispRes
+      }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispSeat
+      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DeleteTraveller, {
+        deleteIssue: this.deleteIssue
+      }));
+    } else if (this.state.routes == 3) {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Singapore Railway System"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleAddTra
+      }, "Add Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDelTra
+      }, "Delete Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispRes
+      }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispSeat
+      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DisplayTraveller, {
+        issues: this.state.issues
+      }));
+    } else {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Singapore Railway System"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleAddTra
+      }, "Add Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDelTra
+      }, "Delete Traveller"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispRes
+      }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDispSeat
+      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DisplayTraveller, {
+        issues: this.state.issues
+      }));
+    }
   }
 
 }
 
-const element = /*#__PURE__*/React.createElement(IssueList, null);
+const element = /*#__PURE__*/React.createElement(DisplayHomepage, null);
 ReactDOM.render(element, document.getElementById('contents'));

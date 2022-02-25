@@ -1,17 +1,4 @@
-const initialIssues = [
-  {
-    id: 1, name: 'Ravan', phone: 80395199,
-    created: new Date('2018-08-15'),
-  },
-];
-
-class IssueFilter extends React.Component {
-  render() {
-    return (
-      <div>This is a placeholder for the issue filter.</div>
-    );
-  }
-}
+const initialIssues = [];
 
 class IssueRow extends React.Component {
   render() {
@@ -22,38 +9,12 @@ class IssueRow extends React.Component {
         <td>{issue.name}</td>
         <td>{issue.phone}</td>
         <td>{issue.created.toDateString()}</td>
-        <td><button>Remove</button></td>
       </tr>
     );
   }
 }
 
-class IssueTable extends React.Component {
-  render() {
-    const issueRows = this.props.issues.map(issue =>
-      <IssueRow key={issue.id} issue={issue} />
-    );
-
-    return (
-      <table className="bordered-table">
-        <thead>
-          <tr>
-            <th>Seat No.</th>
-            <th>Name</th>
-            <th>Phone Number</th>
-            <th>Timestamp</th>
-            <th>Operation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {issueRows}
-        </tbody>
-      </table>
-    );
-  }
-}
-
-class IssueAdd extends React.Component {
+class AddTraveller extends React.Component {
   constructor() {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -74,18 +35,71 @@ class IssueAdd extends React.Component {
       <form name="issueAdd" onSubmit={this.handleSubmit}>
         <input type="text" name="name" placeholder="Name" />
         <input type="text" name="phone" placeholder="Phone" />
-	<input type="text" name="seat" placeholder="Seat No." />
+	      <input type="text" name="seat" placeholder="Seat No." />
         <button>Add</button>
       </form>
     );
   }
 }
 
-class IssueList extends React.Component {
+class DeleteTraveller extends React.Component {
   constructor() {
     super();
-    this.state = { issues: [] };
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete(e) {
+    e.preventDefault();
+    const form1 = document.forms.issueDelete;
+    const issueID = form1.seatDel.value;
+    this.props.deleteIssue(issueID);
+    form1.seatDel.value = "";
+  }
+
+  render() {
+    return (
+      <form name="issueDelete" onSubmit={this.handleDelete}>
+	      <input type="text" name="seatDel" placeholder="Seat No." />
+        <button>Delete</button>
+      </form>
+    );
+  }
+}
+
+class DisplayTraveller extends React.Component {
+  render() {
+    const issueRows = this.props.issues.map(issue =>
+      <IssueRow key={issue.id} issue={issue} />
+    );
+
+    return (
+      <table className="bordered-table">
+        <thead>
+          <tr>
+            <th>Seat No.</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {issueRows}
+        </tbody>
+      </table>
+    );
+  }
+}
+
+class DisplayHomepage extends React.Component {
+  constructor() {
+    super();
+    this.state = { routes: 1, issues: [] };
     this.createIssue = this.createIssue.bind(this);
+    this.deleteIssue = this.deleteIssue.bind(this);
+    this.handleAddTra = this.handleAddTra.bind(this);
+    this.handleDelTra = this.handleDelTra.bind(this);
+    this.handleDispRes = this.handleDispRes.bind(this);
+    this.handleDispSeat = this.handleDispSeat.bind(this);
   }
 
   componentDidMount() {
@@ -105,20 +119,98 @@ class IssueList extends React.Component {
     this.setState({ issues: newIssueList });
   }
 
+  deleteIssue(issueID) {
+    const newIssueList = this.state.issues.slice();
+    const updateIssueList = [];
+    for (let i=0; i<this.state.issues.length; i++) {
+      if (newIssueList[i].id == issueID) {
+        continue;
+      }
+      updateIssueList.push(newIssueList[i])
+    }
+    this.setState({ issues: updateIssueList });
+  }
+
+  handleAddTra(e) {
+    e.preventDefault();
+    this.setState({ routes: 1 });
+  }
+
+  handleDelTra(e) {
+    e.preventDefault();
+    this.setState({ routes: 2 });
+  }
+
+  handleDispRes(e) {
+    e.preventDefault();
+    this.setState({ routes: 3 });
+  }
+
+  handleDispSeat(e) {
+    e.preventDefault();
+    this.setState({ routes: 4 });
+  }
+
   render() {
-    return (
-      <React.Fragment>
-        <h1>Singapore Railway System</h1>
-        <IssueFilter />
-        <hr />
-        <IssueTable issues={this.state.issues} />
-        <hr />
-        <IssueAdd createIssue={this.createIssue} />
-      </React.Fragment>
-    );
+    if (this.state.routes == 1)
+    {
+      return (
+        <React.Fragment>
+          <h1>Singapore Railway System</h1>
+            <button onClick={this.handleAddTra}>Add Traveller</button>
+            <button onClick={this.handleDelTra}>Delete Traveller</button>
+            <button onClick={this.handleDispRes}>Display Reservation</button>
+            <button onClick={this.handleDispSeat}>Display Seats</button>
+          <hr />
+          <AddTraveller createIssue={this.createIssue} />
+        </React.Fragment>
+      );
+    }
+    else if (this.state.routes == 2)
+    {
+      return (
+        <React.Fragment>
+          <h1>Singapore Railway System</h1>
+          <button onClick={this.handleAddTra}>Add Traveller</button>
+          <button onClick={this.handleDelTra}>Delete Traveller</button>
+          <button onClick={this.handleDispRes}>Display Reservation</button>
+          <button onClick={this.handleDispSeat}>Display Seats</button>
+          <hr />
+          <DeleteTraveller deleteIssue={this.deleteIssue} />
+        </React.Fragment>
+      );
+    }
+    else if (this.state.routes == 3)
+    {
+      return (
+        <React.Fragment>
+          <h1>Singapore Railway System</h1>
+          <button onClick={this.handleAddTra}>Add Traveller</button>
+          <button onClick={this.handleDelTra}>Delete Traveller</button>
+          <button onClick={this.handleDispRes}>Display Reservation</button>
+          <button onClick={this.handleDispSeat}>Display Seats</button>
+          <hr />
+          <DisplayTraveller issues={this.state.issues} />
+        </React.Fragment>
+      );
+    }
+    else
+    {
+      return (
+        <React.Fragment>
+          <h1>Singapore Railway System</h1>
+          <button onClick={this.handleAddTra}>Add Traveller</button>
+          <button onClick={this.handleDelTra}>Delete Traveller</button>
+          <button onClick={this.handleDispRes}>Display Reservation</button>
+          <button onClick={this.handleDispSeat}>Display Seats</button>
+          <hr />
+          <DisplayTraveller issues={this.state.issues} />
+        </React.Fragment>
+      );
+    }
   }
 }
 
-const element = <IssueList />;
+const element = <DisplayHomepage />;
 
 ReactDOM.render(element, document.getElementById('contents'));

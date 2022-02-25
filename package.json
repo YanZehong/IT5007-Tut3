@@ -21,7 +21,8 @@
   "homepage": "https://github.com/YanZehong/IT5007-Tut3#readme",
   "dependencies": {
     "express": "^4.17.3",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "react-router-dom": "^6.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
