@@ -1,9 +1,5 @@
 const initialIssues = [];
 
-function hasNumber(myString) {
-  return /\d/.test(myString);
-}
-
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
@@ -69,8 +65,15 @@ class DeleteTraveller extends React.Component {
   handleDelete(e) {
     e.preventDefault();
     const form1 = document.forms.issueDelete;
-    const issueID = form1.seatDel.value;
-    this.props.deleteIssue(issueID);
+    let seatNum1 = Number(form1.seatDel.value);
+
+    if (seatNum1 >= 1 && seatNum1 <= 25) {
+      const issueID = form1.seatDel.value;
+      this.props.deleteIssue(issueID);
+    } else {
+      this.props.msgDisplayDel("Error: Invalid Seat Number");
+    }
+
     form1.seatDel.value = "";
   }
 
@@ -100,6 +103,66 @@ class DisplayTraveller extends React.Component {
 
 }
 
+class DisplaySeat extends React.Component {
+  render() {
+    const seatDict = this.props.seatDict;
+    var seats = [];
+
+    for (let rr = 0; rr < 5; rr++) {
+      var temps = {
+        rowid: rr,
+        cols: [],
+        colors: []
+      };
+
+      for (let cc = 1; cc < 6; cc++) {
+        let checkNum = rr * 5 + cc;
+        temps.cols.push(checkNum);
+
+        if (seatDict[checkNum] == "Available") {
+          temps.colors.push("lightgreen");
+        } else {
+          temps.colors.push("lightcoral");
+        }
+      }
+
+      seats.push(temps);
+    }
+
+    return /*#__PURE__*/React.createElement("table", {
+      id: "sTable"
+    }, /*#__PURE__*/React.createElement("thead", null), /*#__PURE__*/React.createElement("tbody", null, seats.map(seat => /*#__PURE__*/React.createElement("tr", {
+      key: seat.rowid
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center",
+        background: seat.colors[0]
+      }
+    }, seat.cols[0]), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center",
+        background: seat.colors[1]
+      }
+    }, seat.cols[1]), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center",
+        background: seat.colors[2]
+      }
+    }, seat.cols[2]), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center",
+        background: seat.colors[3]
+      }
+    }, seat.cols[3]), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center",
+        background: seat.colors[4]
+      }
+    }, seat.cols[4])))));
+  }
+
+}
+
 class DisplayHomepage extends React.Component {
   constructor() {
     super();
@@ -111,6 +174,7 @@ class DisplayHomepage extends React.Component {
     this.createIssue = this.createIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
     this.msgDisplay = this.msgDisplay.bind(this);
+    this.msgDisplayDel = this.msgDisplayDel.bind(this);
     this.handleAddTra = this.handleAddTra.bind(this);
     this.handleDelTra = this.handleDelTra.bind(this);
     this.handleDispRes = this.handleDispRes.bind(this);
@@ -160,23 +224,37 @@ class DisplayHomepage extends React.Component {
   deleteIssue(issueID) {
     const newIssueList = this.state.issues.slice();
     const updateIssueList = [];
+    const updateSeatDictDel = this.state.seatDict;
+    let seatNumDel = Number(issueID);
 
-    for (let i = 0; i < this.state.issues.length; i++) {
-      if (newIssueList[i].id == issueID) {
-        continue;
+    if (updateSeatDictDel[seatNumDel] == "Occupied") {
+      for (let i = 0; i < this.state.issues.length; i++) {
+        if (newIssueList[i].id == issueID) {
+          continue;
+        }
+
+        updateIssueList.push(newIssueList[i]);
       }
 
-      updateIssueList.push(newIssueList[i]);
+      updateSeatDictDel[seatNumDel] = "Available";
+      this.setState({
+        issues: updateIssueList,
+        seatDict: updateSeatDictDel
+      });
+      this.msgDisplayDel("Successful Cancel");
+    } else {
+      this.msgDisplayDel("Not found! No need to delete");
     }
-
-    this.setState({
-      issues: updateIssueList
-    });
   }
 
   msgDisplay(msg) {
     const msgDisp = document.getElementById("msgDisplay");
     msgDisp.textContent = msg;
+  }
+
+  msgDisplayDel(msg) {
+    const msgDispDel = document.getElementById("msgDisplayDel");
+    msgDispDel.textContent = msg;
   }
 
   handleAddTra(e) {
@@ -233,7 +311,10 @@ class DisplayHomepage extends React.Component {
       }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
         onClick: this.handleDispSeat
       }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DeleteTraveller, {
-        deleteIssue: this.deleteIssue
+        deleteIssue: this.deleteIssue,
+        msgDisplayDel: this.msgDisplayDel
+      }), /*#__PURE__*/React.createElement("p", {
+        id: "msgDisplayDel"
       }));
     } else if (this.state.routes == 3) {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Singapore Railway System"), /*#__PURE__*/React.createElement("button", {
@@ -256,8 +337,8 @@ class DisplayHomepage extends React.Component {
         onClick: this.handleDispRes
       }, "Display Reservation"), /*#__PURE__*/React.createElement("button", {
         onClick: this.handleDispSeat
-      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DisplayTraveller, {
-        issues: this.state.issues
+      }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DisplaySeat, {
+        seatDict: this.state.seatDict
       }));
     }
   }

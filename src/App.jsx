@@ -1,9 +1,5 @@
 const initialIssues = [];
 
-function hasNumber(myString) {
-  return /\d/.test(myString);
-}
-
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
@@ -61,8 +57,14 @@ class DeleteTraveller extends React.Component {
   handleDelete(e) {
     e.preventDefault();
     const form1 = document.forms.issueDelete;
-    const issueID = form1.seatDel.value;
-    this.props.deleteIssue(issueID);
+    let seatNum1 = Number(form1.seatDel.value);
+    if (seatNum1>=1 && seatNum1<=25){
+      const issueID = form1.seatDel.value;
+      this.props.deleteIssue(issueID);
+    }
+    else {
+      this.props.msgDisplayDel("Error: Invalid Seat Number");
+    }
     form1.seatDel.value = "";
   }
 
@@ -100,6 +102,43 @@ class DisplayTraveller extends React.Component {
   }
 }
 
+class DisplaySeat extends React.Component {
+  render() {
+    const seatDict = this.props.seatDict;
+    var seats = [];
+    for (let rr=0; rr<5; rr++) {
+      var temps = {rowid: rr, cols:[], colors: []};
+      for (let cc=1; cc<6; cc++) {
+        let checkNum = (rr*5)+cc;
+        temps.cols.push(checkNum);
+        if (seatDict[checkNum] == "Available") {
+          temps.colors.push("lightgreen");
+        }
+        else {
+          temps.colors.push("lightcoral");
+        }
+      }
+      seats.push(temps);
+    }
+    return (
+      <table id="sTable">
+        <thead></thead>
+        <tbody>
+          {seats.map((seat)=>(
+            <tr key={seat.rowid}>
+              <td style={{textAlign: "center", background: seat.colors[0]}}>{seat.cols[0]}</td>
+              <td style={{textAlign: "center", background: seat.colors[1]}}>{seat.cols[1]}</td>
+              <td style={{textAlign: "center", background: seat.colors[2]}}>{seat.cols[2]}</td>
+              <td style={{textAlign: "center", background: seat.colors[3]}}>{seat.cols[3]}</td>
+              <td style={{textAlign: "center", background: seat.colors[4]}}>{seat.cols[4]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+}
+
 class DisplayHomepage extends React.Component {
   constructor() {
     super();
@@ -107,6 +146,7 @@ class DisplayHomepage extends React.Component {
     this.createIssue = this.createIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
     this.msgDisplay = this.msgDisplay.bind(this);
+    this.msgDisplayDel = this.msgDisplayDel.bind(this);
     this.handleAddTra = this.handleAddTra.bind(this);
     this.handleDelTra = this.handleDelTra.bind(this);
     this.handleDispRes = this.handleDispRes.bind(this);
@@ -147,18 +187,32 @@ class DisplayHomepage extends React.Component {
   deleteIssue(issueID) {
     const newIssueList = this.state.issues.slice();
     const updateIssueList = [];
-    for (let i=0; i<this.state.issues.length; i++) {
-      if (newIssueList[i].id == issueID) {
-        continue;
+    const updateSeatDictDel = this.state.seatDict;
+    let seatNumDel = Number(issueID)
+    if (updateSeatDictDel[seatNumDel] == "Occupied") {
+      for (let i=0; i<this.state.issues.length; i++) {
+        if (newIssueList[i].id == issueID) {
+          continue;
+        }
+        updateIssueList.push(newIssueList[i])
       }
-      updateIssueList.push(newIssueList[i])
+      updateSeatDictDel[seatNumDel] = "Available";
+      this.setState({ issues: updateIssueList, seatDict: updateSeatDictDel });
+      this.msgDisplayDel("Successful Cancel");
     }
-    this.setState({ issues: updateIssueList });
+    else {
+      this.msgDisplayDel("Not found! No need to delete");
+    }
   }
 
   msgDisplay(msg) {
     const msgDisp = document.getElementById("msgDisplay");
     msgDisp.textContent=msg;
+  }
+
+  msgDisplayDel(msg) {
+    const msgDispDel = document.getElementById("msgDisplayDel");
+    msgDispDel.textContent=msg;
   }
 
   handleAddTra(e) {
@@ -207,7 +261,8 @@ class DisplayHomepage extends React.Component {
           <button onClick={this.handleDispRes}>Display Reservation</button>
           <button onClick={this.handleDispSeat}>Display Seats</button>
           <hr />
-          <DeleteTraveller deleteIssue={this.deleteIssue} />
+          <DeleteTraveller deleteIssue={this.deleteIssue} msgDisplayDel = {this.msgDisplayDel}/>
+          <p id="msgDisplayDel"></p>
         </React.Fragment>
       );
     }
@@ -235,7 +290,7 @@ class DisplayHomepage extends React.Component {
           <button onClick={this.handleDispRes}>Display Reservation</button>
           <button onClick={this.handleDispSeat}>Display Seats</button>
           <hr />
-          <DisplayTraveller issues={this.state.issues} />
+          <DisplaySeat seatDict={this.state.seatDict} />
         </React.Fragment>
       );
     }
