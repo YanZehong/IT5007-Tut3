@@ -32,3 +32,17 @@ props:
 (2) contain letters in Seat No.- throw Error: Invalid Seat Number  
 (3) occupied slots- throw message: Occupied Seat  
 (4) delete free seat- throw message: Not found! No need to delete  
+
+#### Demonstration
+##### addTraveller
+<image src="/images/add-case1.PNG"/>
+<br />
+##### deleteTraveller
+<image src="/images/delete-case4.PNG"/>
+<br />
+##### displayTraveller
+<image src="/images/list-before-delete.PNG"/>
+<br />
+##### displayFreeSeats
+<image src="/images/seats-before-delete.PNG"/>
+<br />
