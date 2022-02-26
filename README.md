@@ -36,16 +36,12 @@ props:
 #### Demonstration
 ##### addTraveller
 <image src="/images/add-case1.png"/>
-<br />
 
 ##### deleteTraveller
 <image src="/images/delete-case4.png"/>
-<br />
 
 ##### displayTraveller
-<image src="/images/list-before-delete.png"/>
-<br />
+<image src="/images/list-after-delete.png"/>
 
 ##### displayFreeSeats
-<image src="/images/seats-before-delete.png"/>
-<br />
+<image src="/images/seats-after-delete.png"/>
