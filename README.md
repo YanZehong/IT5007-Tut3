@@ -3,15 +3,17 @@ github: https://github.com/YanZehong/IT5007-YZH.git
 
 ## Framework
 ### React Components
-#### Main component: <DisplayHomepage />
-Contain logic code for enabling buttons to display the relevant components. Define states and props for maintaining information that is persistent/shared between components.  
+#### Main component
+<DisplayHomepage /> Contain logic code for enabling buttons to display the relevant components. Define states and props for maintaining information that is persistent/shared between components.  
 
-states: 
+states:
+
 (1)"routes" for component switch;  
 (2)"issues" for displaying the reservation list;  
 (3)"seatDict" for visual representation of reserved/unreserved tickets.  
 
 props:
+
 (1) constructor(): init. and binding statement;  
 (2) componentDidMount() and loadData(): load data;  
 (3) createIssue(issue): take issue as input and update state;  
