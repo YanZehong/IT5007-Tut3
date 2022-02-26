@@ -1,5 +1,9 @@
 const initialIssues = [];
 
+function hasNumber(myString) {
+  return /\d/.test(myString);
+}
+
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
@@ -23,10 +27,16 @@ class AddTraveller extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     const form = document.forms.issueAdd;
-    const issue = {
-	    name: form.name.value, phone: form.phone.value, id: form.seat.value,
+    let seatNum = Number(form.seat.value)
+    if (seatNum>=1 && seatNum<=25){
+      const issue = {
+        name: form.name.value, phone: form.phone.value, id: form.seat.value,
+      }
+      this.props.createIssue(issue);
     }
-    this.props.createIssue(issue);
+    else {
+      this.props.msgDisplay("Error: Invalid Seat Number");
+    }
     form.name.value = ""; form.phone.value = ""; form.seat.value = "";
   }
 
@@ -93,9 +103,10 @@ class DisplayTraveller extends React.Component {
 class DisplayHomepage extends React.Component {
   constructor() {
     super();
-    this.state = { routes: 1, issues: [] };
+    this.state = { routes: 1, issues: [], seatDict: {} };
     this.createIssue = this.createIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
+    this.msgDisplay = this.msgDisplay.bind(this);
     this.handleAddTra = this.handleAddTra.bind(this);
     this.handleDelTra = this.handleDelTra.bind(this);
     this.handleDispRes = this.handleDispRes.bind(this);
@@ -107,16 +118,30 @@ class DisplayHomepage extends React.Component {
   }
 
   loadData() {
+    var initialDict = {};
+    for (let k=1; k<26; k++) {
+      initialDict[k] = "Available";
+    }
     setTimeout(() => {
-      this.setState({ issues: initialIssues });
+      this.setState({ issues: initialIssues, seatDict: initialDict });
     }, 500);
   }
 
   createIssue(issue) {
     issue.created = new Date();
-    const newIssueList = this.state.issues.slice();
-    newIssueList.push(issue);
-    this.setState({ issues: newIssueList });
+    let seatNum = Number(issue.id)
+    const updateSeatDict = this.state.seatDict;
+    if (updateSeatDict[seatNum]=="Available") {
+      const newIssueList = this.state.issues.slice();
+      newIssueList.push(issue);
+      this.setState({ issues: newIssueList });
+      updateSeatDict[seatNum] = "Occupied";
+      this.setState({ seatDict: updateSeatDict });
+      this.msgDisplay("Successful");
+    }
+    else {
+      this.msgDisplay("Occupied Seat");
+    }
   }
 
   deleteIssue(issueID) {
@@ -129,6 +154,11 @@ class DisplayHomepage extends React.Component {
       updateIssueList.push(newIssueList[i])
     }
     this.setState({ issues: updateIssueList });
+  }
+
+  msgDisplay(msg) {
+    const msgDisp = document.getElementById("msgDisplay");
+    msgDisp.textContent=msg;
   }
 
   handleAddTra(e) {
@@ -162,7 +192,8 @@ class DisplayHomepage extends React.Component {
             <button onClick={this.handleDispRes}>Display Reservation</button>
             <button onClick={this.handleDispSeat}>Display Seats</button>
           <hr />
-          <AddTraveller createIssue={this.createIssue} />
+          <AddTraveller createIssue={this.createIssue} msgDisplay = {this.msgDisplay} />
+          <p id="msgDisplay"></p>
         </React.Fragment>
       );
     }
