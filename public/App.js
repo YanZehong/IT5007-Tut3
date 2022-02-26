@@ -3,7 +3,7 @@ const initialIssues = [];
 class IssueRow extends React.Component {
   render() {
     const issue = this.props.issue;
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.phone), /*#__PURE__*/React.createElement("td", null, issue.created.toDateString()));
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.phone), /*#__PURE__*/React.createElement("td", null, issue.created));
   }
 
 }
@@ -201,7 +201,8 @@ class DisplayHomepage extends React.Component {
   }
 
   createIssue(issue) {
-    issue.created = new Date();
+    const curTime = new Date();
+    issue.created = curTime.toString().slice(0, 25);
     let seatNum = Number(issue.id);
     const updateSeatDict = this.state.seatDict;
 

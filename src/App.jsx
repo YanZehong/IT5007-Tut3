@@ -8,7 +8,7 @@ class IssueRow extends React.Component {
         <td>{issue.id}</td>
         <td>{issue.name}</td>
         <td>{issue.phone}</td>
-        <td>{issue.created.toDateString()}</td>
+        <td>{issue.created}</td>
       </tr>
     );
   }
@@ -168,7 +168,8 @@ class DisplayHomepage extends React.Component {
   }
 
   createIssue(issue) {
-    issue.created = new Date();
+    const curTime = new Date();
+    issue.created = curTime.toString().slice(0, 25);
     let seatNum = Number(issue.id)
     const updateSeatDict = this.state.seatDict;
     if (updateSeatDict[seatNum]=="Available") {
