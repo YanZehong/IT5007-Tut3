@@ -120,7 +120,7 @@ class DisplaySeat extends React.Component {
         temps.cols.push(checkNum);
 
         if (seatDict[checkNum] == "Available") {
-          temps.colors.push("lightgreen");
+          temps.colors.push("lightgrey");
         } else {
           temps.colors.push("lightcoral");
         }
@@ -339,7 +339,17 @@ class DisplayHomepage extends React.Component {
         onClick: this.handleDispSeat
       }, "Display Seats"), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(DisplaySeat, {
         seatDict: this.state.seatDict
-      }));
+      }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", {
+        id: "Ltable"
+      }, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+        style: {
+          background: "lightgrey"
+        }
+      }, "Available"), /*#__PURE__*/React.createElement("td", {
+        style: {
+          background: "lightcoral"
+        }
+      }, "Occupied"))))));
     }
   }
 

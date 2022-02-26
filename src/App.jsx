@@ -112,7 +112,7 @@ class DisplaySeat extends React.Component {
         let checkNum = (rr*5)+cc;
         temps.cols.push(checkNum);
         if (seatDict[checkNum] == "Available") {
-          temps.colors.push("lightgreen");
+          temps.colors.push("lightgrey");
         }
         else {
           temps.colors.push("lightcoral");
@@ -291,6 +291,16 @@ class DisplayHomepage extends React.Component {
           <button onClick={this.handleDispSeat}>Display Seats</button>
           <hr />
           <DisplaySeat seatDict={this.state.seatDict} />
+          <div>
+            <table id="Ltable">
+              <tbody>
+                <tr>
+                  <td style={{background: "lightgrey"}}>Available</td>
+                  <td style={{background: "lightcoral"}}>Occupied</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </React.Fragment>
       );
     }
